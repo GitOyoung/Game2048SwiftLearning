@@ -21,7 +21,8 @@ class ViewController: UIViewController {
     }
 
     @IBAction func startGameButtonTouchUpInside(sender: UIButton) {
-        
+        let gameView: GameViewController = GameViewController(dimension: 4, threshold: 2048)
+        self.presentViewController(gameView, animated: true, completion: nil)
     }
 
 }

@@ -59,11 +59,11 @@ class GameModel: NSObject {
         }
         queue.append(MoveCmd(direction: direction, completion: completion))
         if !timer.valid {
-            timerFired()
+            TimerTick()
         }
     }
     
-    func timerFired() {
+    func TimerTick() {
         if queue.count == 0 {
             return
         }
@@ -71,6 +71,7 @@ class GameModel: NSObject {
         var changed = false
         while queue.count > 0 {
             let cmd = queue[0]
+            queue.removeAtIndex(0)
             changed = performMove(cmd.direction)
             cmd.completion(changed)
             if changed {
@@ -80,10 +81,99 @@ class GameModel: NSObject {
         if changed {
             timer = NSTimer.scheduledTimerWithTimeInterval(queueWait,
                 target: self,
-                selector: Selector("timerFired"),
+                selector: Selector("TimerTick"),
                 userInfo: nil,
                 repeats: false)
         }
+    }
+    
+    func tileBelowHasSameValue(location: (Int, Int), _ value: Int) -> Bool {
+        let (x, y) = location
+        guard y != dimension - 1 else {
+            return false
+        }
+        if case let .Tile(v) = gameboard[x, y+1] {
+            return v == value
+        }
+        return false
+    }
+    
+    func tileToRightHasSameValue(location: (Int, Int), _ value: Int) -> Bool {
+        let (x, y) = location
+        guard x != dimension - 1 else {
+            return false
+        }
+        if case let .Tile(v) = gameboard[x+1, y] {
+            return v == value
+        }
+        return false
+    }
+    func gameboardEmptySpots() -> [(Int, Int)] {
+        var emptyBuffer : [(Int, Int)] = []
+        for i in 0..<dimension {
+            for j in 0..<dimension {
+                if case .Empty = gameboard[i, j] {
+                    emptyBuffer += [(i, j)]
+                }
+            }
+        }
+        return emptyBuffer
+    }
+    
+    func placeTile(position: (Int, Int), value: Int) {
+        let (x, y) = position
+        if case .Empty = gameboard[x, y] {
+            gameboard[x, y] = Tile.Tile(value)
+            delegate.placeTile(position, value: value)
+        }
+    }
+    
+    /// Insert a tile with a given value at a random open position upon the gameboard.
+    func placeTileAtRandomLocation(value: Int) {
+        let openSpots = gameboardEmptySpots()
+        if openSpots.isEmpty {
+            // No more open spots; don't even bother
+            return
+        }
+        // Randomly select an open spot, and put a new tile there
+        let idx = Int(arc4random_uniform(UInt32(openSpots.count-1)))
+        let (x, y) = openSpots[idx]
+        placeTile((x, y), value: value)
+    }
+    
+    
+    func gameOver() -> Bool {
+        guard gameboardEmptySpots().isEmpty else {
+            // Player can't lose before filling up the board
+            return false
+        }
+        
+        // Run through all the tiles and check for possible moves
+        for i in 0..<dimension {
+            for j in 0..<dimension {
+                switch gameboard[i, j] {
+                case .Empty:
+                    assert(false, "Gameboard reported itself as full, but we still found an empty tile. This is a logic error.")
+                case let .Tile(v):
+                    if tileBelowHasSameValue((i, j), v) || tileToRightHasSameValue((i, j), v) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+    
+    func win() -> (Bool, (Int, Int)?) {
+        for i in 0..<dimension {
+            for j in 0..<dimension {
+                // Look for a tile with the winning score or greater
+                if case let .Tile(v) = gameboard[i, j] where v >= threshold {
+                    return (true, (i, j))
+                }
+            }
+        }
+        return (false, nil)
     }
     
     func performMove(direction: MoveDirection) -> Bool {
@@ -126,7 +216,7 @@ class GameModel: NSObject {
                     }
                     gameboard[sx, sy] = Tile.Empty
                     gameboard[dx, dy] = Tile.Tile(v)
-                    delegate.moveOneTile(coords[s], to: coords[s], value: v)
+                    delegate.moveOneTile(coords[s], to: coords[d], value: v)
                 case let MoveOrder.DoubleMoveOrder(s1, s2, d, value: v):
                     
                     let (s1x, s1y) = coords[s1]
@@ -145,11 +235,74 @@ class GameModel: NSObject {
     
     
     func condense(group: [Tile]) -> [ActionToken] {
-        return []
+        var tokenBuffer = [ActionToken]()
+        for (idx, tile) in group.enumerate() {
+            // Go through all the tiles in 'group'. When we see a tile 'out of place', create a corresponding ActionToken.
+            switch tile {
+            case let .Tile(value) where tokenBuffer.count == idx:
+                tokenBuffer.append(ActionToken.NoAction(source: idx, value: value))
+            case let .Tile(value):
+                tokenBuffer.append(ActionToken.Move(source: idx, value: value))
+            default:
+                break
+            }
+        }
+        return tokenBuffer;
+    }
+    
+    class func quiescentTileStillQuiescent(inputPosition: Int, outputLength: Int, originalPosition: Int) -> Bool
+    {
+        return (inputPosition == outputLength) && (originalPosition == inputPosition)
     }
     
     func collapse(group: [ActionToken]) -> [ActionToken] {
-        return []
+        
+        var tokenBuffer = [ActionToken]()
+        var skipNext = false
+        for (idx, token) in group.enumerate() {
+            if skipNext {
+                // Prior iteration handled a merge. So skip this iteration.
+                skipNext = false
+                continue
+            }
+            switch token {
+            case .SingleCombine:
+                assert(false, "Cannot have single combine token in input")
+            case .DoubleCombine:
+                assert(false, "Cannot have double combine token in input")
+            case let .NoAction(s, v)
+                where (idx < group.count-1
+                    && v == group[idx+1].getValue()
+                    && GameModel.quiescentTileStillQuiescent(idx, outputLength: tokenBuffer.count, originalPosition: s)):
+                // This tile hasn't moved yet, but matches the next tile. This is a single merge
+                // The last tile is *not* eligible for a merge
+                let next = group[idx+1]
+                let nv = v + group[idx+1].getValue()
+                skipNext = true
+                tokenBuffer.append(ActionToken.SingleCombine(source: next.getSource(), value: nv))
+            case let t where (idx < group.count-1 && t.getValue() == group[idx+1].getValue()):
+                // This tile has moved, and matches the next tile. This is a double merge
+                // (The tile may either have moved prevously, or the tile might have moved as a result of a previous merge)
+                // The last tile is *not* eligible for a merge
+                let next = group[idx+1]
+                let nv = t.getValue() + group[idx+1].getValue()
+                skipNext = true
+                tokenBuffer.append(ActionToken.DoubleCombine(first: t.getSource(), second: next.getSource(), value: nv))
+            case let .NoAction(s, v) where !GameModel.quiescentTileStillQuiescent(idx, outputLength: tokenBuffer.count, originalPosition: s):
+                // A tile that didn't move before has moved (first cond.), or there was a previous merge (second cond.)
+                tokenBuffer.append(ActionToken.Move(source: s, value: v))
+            case let .NoAction(s, v):
+                // A tile that didn't move before still hasn't moved
+                tokenBuffer.append(ActionToken.NoAction(source: s, value: v))
+            case let .Move(s, v):
+                // Propagate a move
+                tokenBuffer.append(ActionToken.Move(source: s, value: v))
+            default:
+                // Don't do anything
+                break
+            }
+        }
+        return tokenBuffer
     }
     
     

@@ -7,17 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E38E699B1C19085A002869F4 /* GameBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E699A1C19085A002869F4 /* GameBoardView.swift */; };
+		E38E699D1C190880002869F4 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E699C1C190880002869F4 /* TileView.swift */; };
+		E38E699F1C190A18002869F4 /* TileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E699E1C190A18002869F4 /* TileHelper.swift */; };
+		E38E69A11C19344E002869F4 /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E69A01C19344E002869F4 /* ScoreView.swift */; };
+		E38E69A41C1951D9002869F4 /* GTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E69A31C1951D9002869F4 /* GTColor.swift */; };
 		E3A2B6B81C13DB9100A8B779 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6B71C13DB9100A8B779 /* AppDelegate.swift */; };
 		E3A2B6BA1C13DB9100A8B779 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6B91C13DB9100A8B779 /* ViewController.swift */; };
 		E3A2B6BD1C13DB9100A8B779 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3A2B6BB1C13DB9100A8B779 /* Main.storyboard */; };
 		E3A2B6BF1C13DB9100A8B779 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3A2B6BE1C13DB9100A8B779 /* Assets.xcassets */; };
 		E3A2B6C21C13DB9100A8B779 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3A2B6C01C13DB9100A8B779 /* LaunchScreen.storyboard */; };
-		E3A2B6CA1C13DCF100A8B779 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6C91C13DCF100A8B779 /* GameViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		E3A2B6CD1C13DD5100A8B779 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6CC1C13DD5100A8B779 /* GameModel.swift */; settings = {ASSET_TAGS = (); }; };
-		E3A2B6CF1C13E16600A8B779 /* AsistantModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6CE1C13E16600A8B779 /* AsistantModels.swift */; settings = {ASSET_TAGS = (); }; };
+		E3A2B6CA1C13DCF100A8B779 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6C91C13DCF100A8B779 /* GameViewController.swift */; };
+		E3A2B6CD1C13DD5100A8B779 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6CC1C13DD5100A8B779 /* GameModel.swift */; };
+		E3A2B6CF1C13E16600A8B779 /* AsistantModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A2B6CE1C13E16600A8B779 /* AsistantModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E38E699A1C19085A002869F4 /* GameBoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoardView.swift; sourceTree = "<group>"; };
+		E38E699C1C190880002869F4 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileView.swift; sourceTree = "<group>"; };
+		E38E699E1C190A18002869F4 /* TileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileHelper.swift; sourceTree = "<group>"; };
+		E38E69A01C19344E002869F4 /* ScoreView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreView.swift; sourceTree = "<group>"; };
+		E38E69A31C1951D9002869F4 /* GTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GTColor.swift; sourceTree = "<group>"; };
 		E3A2B6B41C13DB9100A8B779 /* Game2048.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Game2048.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3A2B6B71C13DB9100A8B779 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E3A2B6B91C13DB9100A8B779 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -41,6 +51,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E38E69981C190756002869F4 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E3A2B6B91C13DB9100A8B779 /* ViewController.swift */,
+				E3A2B6C91C13DCF100A8B779 /* GameViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		E38E69991C190813002869F4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E38E699A1C19085A002869F4 /* GameBoardView.swift */,
+				E38E699C1C190880002869F4 /* TileView.swift */,
+				E38E69A01C19344E002869F4 /* ScoreView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		E38E69A21C1951AA002869F4 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				E38E69A31C1951D9002869F4 /* GTColor.swift */,
+			);
+			name = Tool;
+			sourceTree = "<group>";
+		};
 		E3A2B6AB1C13DB9100A8B779 = {
 			isa = PBXGroup;
 			children = (
@@ -60,10 +97,12 @@
 		E3A2B6B61C13DB9100A8B779 /* Game2048 */ = {
 			isa = PBXGroup;
 			children = (
+				E38E69A21C1951AA002869F4 /* Tool */,
 				E3A2B6CB1C13DD2D00A8B779 /* Model */,
+				E38E69991C190813002869F4 /* Views */,
+				E38E69981C190756002869F4 /* Controller */,
 				E3A2B6B71C13DB9100A8B779 /* AppDelegate.swift */,
-				E3A2B6B91C13DB9100A8B779 /* ViewController.swift */,
-				E3A2B6C91C13DCF100A8B779 /* GameViewController.swift */,
+				E38E699E1C190A18002869F4 /* TileHelper.swift */,
 				E3A2B6BB1C13DB9100A8B779 /* Main.storyboard */,
 				E3A2B6BE1C13DB9100A8B779 /* Assets.xcassets */,
 				E3A2B6C01C13DB9100A8B779 /* LaunchScreen.storyboard */,
@@ -152,10 +191,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3A2B6BA1C13DB9100A8B779 /* ViewController.swift in Sources */,
+				E38E699F1C190A18002869F4 /* TileHelper.swift in Sources */,
+				E38E69A11C19344E002869F4 /* ScoreView.swift in Sources */,
+				E38E699D1C190880002869F4 /* TileView.swift in Sources */,
 				E3A2B6CD1C13DD5100A8B779 /* GameModel.swift in Sources */,
 				E3A2B6CA1C13DCF100A8B779 /* GameViewController.swift in Sources */,
+				E38E69A41C1951D9002869F4 /* GTColor.swift in Sources */,
 				E3A2B6CF1C13E16600A8B779 /* AsistantModels.swift in Sources */,
 				E3A2B6B81C13DB9100A8B779 /* AppDelegate.swift in Sources */,
+				E38E699B1C19085A002869F4 /* GameBoardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +347,7 @@
 				E3A2B6C81C13DB9100A8B779 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
