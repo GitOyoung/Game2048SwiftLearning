@@ -8,7 +8,7 @@
 
 import UIKit
 
-//临时解决警告使用
+
 
 protocol GameModelProtocol : class {
     func scoreChanged(score: Int)

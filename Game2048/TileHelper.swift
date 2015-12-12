@@ -36,7 +36,7 @@ class TileHelper: TileHelperProtocol {
         case 128, 256, 512, 1024, 2048:
             return GTColor.colorWithHexString("EDCF72", alpha: 1.0)
         default:
-            return UIColor.whiteColor()
+            return UIColor.redColor()
         }
     }
     

@@ -196,17 +196,19 @@ class GameViewController: UIViewController, GameModelProtocol {
         m.placeTileAtRandomLocation(2)
         m.placeTileAtRandomLocation(2)
     }
+    private var isWin: Bool = false
     
     func followUp() {
         assert(gameModel != nil)
         let m = gameModel!
         let (userWon, _) = m.win()
-        if userWon {
+        if userWon  && !isWin {
+            isWin = true
             // TODO: alert delegate we won
             let alertView = UIAlertView()
-            alertView.title = "Victory"
-            alertView.message = "You won!"
-            alertView.addButtonWithTitle("Cancel")
+            alertView.title = "恭喜"
+            alertView.message = "你赢了"
+            alertView.addButtonWithTitle("继续")
             alertView.show()
             // TODO: At this point we should stall the game until the user taps 'New Game' (which hasn't been implemented yet)
             return
@@ -221,9 +223,9 @@ class GameViewController: UIViewController, GameModelProtocol {
             // TODO: alert delegate we lost
             NSLog("You lost...")
             let alertView = UIAlertView()
-            alertView.title = "Defeat"
-            alertView.message = "You lost..."
-            alertView.addButtonWithTitle("Cancel")
+            alertView.title = "游戏结束"
+            alertView.message = "胜败乃兵家常事，大侠请重新来过"
+            alertView.addButtonWithTitle("知道了")
             alertView.show()
         }
     }
